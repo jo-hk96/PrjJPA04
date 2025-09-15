@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+</head>
+<body>
+
+<a href = "/">home</a>
+<h2>안녕하세요!</h2>
+
+
+<input type = "number" id="num"> 
+<button>/posts</button>
+<div id = "div1"></div>
+
+<script>
+	var url = 'https://jsonplaceholder.typicode.com/posts';
+	const btnsEl = document.querySelectorAll('button');
+	const div1 = document.getElementById('div1');
+	const numEl = document.getElementById('num');
+	btnsEl.forEach(function(btn,index){
+		btn.onclick = function(){
+			switch(index){
+			case 0:
+				console.log('numEl.value:', numEl.value); 
+				fetch(`${url}/${numEl.value}`)
+				  .then((response) => response.json())
+				  .then((json) => {
+					  console.log(json);
+					  let html = `<ul>
+					  	<li>유저ID:${json.userId}</li>
+					  	<li>아이디:${json.id}</li>
+					  	<li>제목:${json.title}</li>
+					  	<li>내용:${json.body}</li>
+					  	</ul> `;
+					  div1.innerHTML = html;
+					  /* div1.innerHTML = JSON.stringify(json) */
+				  });
+				break;
+			}
+		}
+	})
+</script>
+</body>
+</html>

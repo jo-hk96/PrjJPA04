@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+</head>
+{{>layout/header}}
+
+<form class = "container" action ="/article/update/{{id}}" method = "POST">
+	<div class = "mb-3">
+		<label for = "title" class = "form-label">제목</label>
+		<input type = "text" class = "form-control" id = "title" name = "title" value = "{{article.title}}">
+	</div>
+	<div class = "mb-3">
+		<label for = "content" class ="form-label">내용</label>
+		<textarea class ="form-control" name = "content" id = "content" rows ="12">{{article.content}}</textarea>
+	</div>
+<div class ="mb-3 form-check">
+	<input type="checkbox" class ="form-check-input" id = "exampleCheck1">
+</div>
+
+<a href = "/" class = "btn btn-secondary">홈</a>
+<a href = "/article/list" class = "btn btn-dark">목록</a>
+<button type="submit" class="btn btn-danger" style = "margin-left: 30px">수정하기</button>
+</form>
+
+
+{{>layout/footer}}
+</body>
+</html>

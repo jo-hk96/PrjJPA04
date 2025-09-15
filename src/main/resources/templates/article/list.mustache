@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+</head>
+{{>layout/header}}
+
+	<!-- 내용 부분 table모양 -->
+	<table class="table table-striped mx-auto width" style ="width:85%">
+		   <thead>
+		      <tr class= "table-secondary">
+		         <th scope="col">번호</th>
+		         <th scope="col">제목</th>
+		         <th scope="col">내용</th>
+		         <th scope="col">삭제</a></th>
+		         <th scope="col">수정</a></th>
+		      </tr>
+		   </thead>
+		   <tbody>
+		    {{#articleList}}
+		      <tr>
+		         <th scope="row">{{id}}</th>
+		         <td><a href ="/article/view/{{id}}" >{{title}}</a></td>
+		         <td>{{content}}</td>
+		          <th scope="col"><a href="/article/delete/{{id}}">삭제</a></th>
+		          <th scope="col"><a href="/article/updateForm/{{id}}">수정</a></th>
+		      </tr>
+			{{/articleList}}
+		   </tbody>
+	</table>
+	{{>layout/footer}} 
+	
+	
+	<script>
+	{{#message}}
+		let message = "{{message}}";
+		if(message){
+		    // alert 함수를 호출하는 올바른 문법
+		    alert(message);
+		}
+	{{/message}}
+</script>
+</body>
+</html>

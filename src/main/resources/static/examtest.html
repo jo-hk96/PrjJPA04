@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src = "https://code.jquery.com/jquery.min.js"></script>
+
+</head>
+<body>
+<h2>Exam Test</h2>
+	<a href = "/exam" >Get 방식 호출</a>
+	
+	
+<form action = "/exam" method = "POST">
+	<input type ="submit" value = "POST">
+</form>
+
+
+<!--form tag 의 method = "get/post"만 가능  -->
+<form action = "/exam" method = "delete">
+	<input type ="submit" value = "delete">
+</form>
+<hr>
+<div>
+	<select id = "method">
+		<option value = "get">GET</option>
+		<option value = "post">POST</option>
+		<option value = "delete">DELETE</option>
+		<option value = "patch">PATCH</option>
+		<option value = "put">PUT</option>
+	</select>
+	<input type = "url" id = "url" value = "http://localhost:8080/exam">
+	<button id = "send">보내기</button>
+	<button id = "getXML">Get XML</button>
+	<h2>Rest API를 위해서는 javaScript로 코딩을 해야한다</h2>
+	<div id = "result"></div>
+	
+	
+	<script>
+		const sendEl = document.getElementById('send');
+		sendEl.onclick = function(){
+			let method = document.getElementById('method').value;
+			let url = document.getElementById('url').value;
+			const resultEl = document.getElementById('result');
+			//rest api를 xhr방식으로 불러온다 : 페이지 디오없이 ajax방식으로 호출
+			fetch(url,{
+				method : method
+			})
+			
+				//일반 text나 xml를 받을때씀
+				.then(response => response.text())
+				.then(data => {
+					console.log(data)
+					alert(data) //[object Response]
+					resultEl.innerHTML = data;		
+				})
+			alert(method)
+			}
+			
+			//xml 불러오기
+			const getXMLEl = document.getElementById('getXML');
+			getXMLEl.onclick = function(){
+				let url = '/data.xml';
+				const resultEl = document.getElementById('result');
+				fetch(url)
+				.then(response => response.text())
+				.then(text => {
+					alert(text)
+					const parser = new DOMParser();
+					const xmlDoc = parser.parseFromString(text , "application/xml")
+					const toEl = xmlDoc.getElementsByTagName('to')[0].textContent;
+					const fromEl = xmlDoc.getElementsByTagName('from')[0].textContent;
+					const headingEl = xmlDoc.getElementsByTagName('heading')[0].textContent;
+					const bodyEl = xmlDoc.getElementsByTagName('body')[0].textContent;
+					let html = `<ul>
+					<li>to : ${toEl}</li>
+					<li>from : ${fromEl}</li>
+					<li>heading : ${headingEl}</li>
+					<li>body : ${bodyEl}</li>
+					</ul>`
+					
+					result.innerHTML = html;
+					
+				})
+				.then(error => console.error(error))
+				//alert(method)
+			}
+		
+		
+		//==============================================================================
+		//xml 불러오기
+		fetch("https://www.w3schools.com/xml/note.xml")
+		  .then(response => response.text())     // 응답을 텍스트로 받음
+		  .then(str => {
+			  
+			  //text -> xml document 객체로 변환
+			  //변환시 xmlDoc.getElementsByTagName() 사용가능해진다
+		    const parser = new DOMParser();
+		    const xmlDoc = parser.parseFromString(str, "application/xml");
+		    
+		    // XML 파싱 예시
+		    const to = xmlDoc.getElementsByTagName("to")[0].textContent;
+		    const from = xmlDoc.getElementsByTagName("from")[0].textContent;
+
+		    console.log("받는 사람:", to);
+		    console.log("보낸 사람:", from);
+		  })
+		  .catch(err => console.error(err));
+	</script>
+</div>
+
+
+</body>
+</html>
