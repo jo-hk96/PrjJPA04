@@ -3,14 +3,14 @@
 <!-- 댓글반복 시작 -->
 	<!-- article controller에서 model로 보낸 commentsList 반복문  -->
 	{{#commentsList}}
-		<div class="card">
+		<div class="card" id="comment-{{id}}">
 		  <h5 class="card-header" >
 			  		{{nickname}}
 			  	<button class = "btn btn-sm btn-outline-primary" style = "margin-left :20px;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="댓글수정">
 			  		댓글수정
 			  	</button>
 			  	
-			  	<button type="button"  class = "btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleDelete">
+			  	<button type="button"  class = "btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleDelete" data-id="{{id}}">
 					댓글삭제
 				</button>
 		  </h5>
@@ -25,48 +25,108 @@
 
 <!-- 삭제 모달 -->
 <div class="modal fade" id="exampleDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-			댓글 삭제  (ㅠ _ ㅠ)?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-        <button type="button" class="btn btn-primary">삭제하기</button>
-      </div>
-    </div>
-  </div>
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+				댓글 삭제  (ㅠ _ ㅠ)?
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+	        <button type="button" class="btn btn-primary"  id = "commentDelete">삭제하기</button>
+	      </div>
+	    </div>
+	  </div>
 </div>
 
 
 <!-- 수정 모달 -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">닉네임:</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-          <div class="mb-3">
-            <label for="message-text" class="col-form-label">댓글내용:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-        <button type="button" class="btn btn-primary">수정하기</button>
-      </div>
-    </div>
-  </div>
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <form>
+	          <div class="mb-3">
+	            <label for="recipient-name" class="col-form-label">닉네임:</label>
+	            <input type="text" class="form-control" id="recipient-name">
+	          </div>
+	          <div class="mb-3">
+	            <label for="message-text" class="col-form-label">댓글내용:</label>
+	            <textarea class="form-control" id="message-text"></textarea>
+	          </div>
+	        </form>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+	        <button type="button" class="btn btn-primary" id = "commentUpdate" >수정하기</button>
+	      </div>
+	    </div>
+	  </div>
 </div>
+
+
+<script>
+	const comUpdateEl = document.querySelector("#commentUpdate");
+	const comDeleteEl = document.querySelector("#commentDelete");
+	const exampleDeleteModal = document.getElementById('exampleDelete');
+
+	// 모달이 열릴 때 이벤트 리스너를 추가
+	exampleDeleteModal.addEventListener('show.bs.modal', function(event) {
+	    // 1. 모달을 띄운 버튼(event.relatedTarget)에서 data-id 속성 값을 가져온다.
+	    const button = event.relatedTarget;
+	    const commentId = button.getAttribute('data-id');
+
+	    // 2. 모달창 내부의 '삭제하기' 버튼을 찾는다.
+	    const modalDeleteBtn = this.querySelector('#commentDelete');
+
+	    // 3. 모달 내부 버튼에 댓글 ID를 넣어준다.
+	    modalDeleteBtn.dataset.id = commentId;
+	});
+
+	// 이제 '삭제하기' 버튼에만 클릭 이벤트 리스너를 추가한다.
+	const modalDeleteBtn = document.querySelector('#commentDelete');
+	modalDeleteBtn.addEventListener('click', (event) => {
+	    // 4. 클릭된 버튼에서 ID를 가져와 URL을 동적으로 생성한다.
+	    const commentId = event.target.dataset.id;
+	    const url = `/api/articles/comments/${commentId}`;
+
+	    const params = {
+	        method: 'DELETE'
+	    };
+	    
+	    fetch(url, params)
+	        .then(response => {
+	            if (response.ok) {
+	                alert('댓글 삭제 성공');
+	                // 1. 모달창을 닫는다.
+	                const modal = document.getElementById('exampleDelete');
+	                const modalInstance = bootstrap.Modal.getInstance(modal);
+	                if (modalInstance) {
+	                    modalInstance.hide();
+	                }
+
+	                // 2. 삭제된 댓글의 HTML 요소를 ID로 직접 찾아서 삭제
+	                const deletedCommentCard = document.getElementById(`comment-${commentId}`);
+	                if (deletedCommentCard) {
+	                    deletedCommentCard.remove();
+	                }
+	            } else {
+	                throw new Error(`삭제 실패: ${response.status}`);
+	            }
+	        })
+	        .catch(error => {
+	            alert('댓글 삭제 중 오류가 발생했습니다.');
+	            console.error('Fetch Error:', error);
+	        });
+	});
+	</Script>
+	
+
+

@@ -1,16 +1,16 @@
 <div id = "comments=new" class = "mt-5 mb-5">
 <form>
-  <div class="mb-3">
-  	<input type = "hidden" value ="{{id}}"/>
-    <label for="new-comments-nickname" class="form-label">닉네임</label>
-    <input type="text" class="form-control" id="new-comments-nickname">
-  </div>
-  <div class="mb-3">
-    <label for="new-comments-body" class="form-label">내용</label>
-    	<textarea class="form-control" id="new-comments-body"></textarea>
-    <div id="bodyhelp" class="form-text">#바른말 고운말을 씁시다</div>
-  </div>
-  <button type="button" class="btn btn-primary" id = "new-create-btn">댓글쓰기</button>
+	  <div class="mb-3">
+		  	<input type = "hidden" value ="{{id}}"/>
+		    <label for="new-comments-nickname" class="form-label">닉네임</label>
+		    <input type="text" class="form-control" id="new-comments-nickname">
+	  </div>
+	  <div class="mb-3">
+		    <label for="new-comments-body" class="form-label">내용</label>
+		    	<textarea class="form-control" id="new-comments-body"></textarea>
+		    <div id="bodyhelp" class="form-text">#바른말 고운말을 씁시다</div>
+	  </div>
+	  <button type="button" class="btn btn-primary" id = "new-create-btn">댓글쓰기</button>
 </form>
 </div>
 <!-- submit은 새로고침함 -->
@@ -20,7 +20,8 @@
 	const newCreateBtnEl = document.querySelector("#new-create-btn");
 	const nickNameEl = document.querySelector("#new-comments-nickname");
 	const bodyEl = document.querySelector("#new-comments-body");
-	
+	const commentsListEl = document.querySelector("#comments-list");
+	 
 	newCreateBtnEl.addEventListener('click' , () =>{
 		let url = '/api/articles/{{id}}/comments'
 		const comment = {
@@ -34,27 +35,16 @@
 				headers :{"Content-type": "application/json; charset=utf-8"}
 		}
 
-		fetch(url, params)
-        .then(response => {
-            // 응답이 성공적인지 확인
-            if (!response.ok) {
-                // 실패하면 오류를 던짐
-                throw new Error("네트워크 응답이 올바르지 않습니다.");
-            }
-            // JSON 형식으로 파싱
-            return response.json();
-        })
-        .then(data => {
-            // 성공 시 알림
-            alert("댓글이 등록되었습니다.");
-            // 페이지 새로고침
-            window.location.href = `/articles/${data.article_id}`;
-        })
-        .catch(error => {
-            // 오류 발생 시 알림
-            alert("댓글이 등록되지 않았습니다.");
-            console.error('Fetch Error:', error);
-        });
+		 fetch(url, params)
+		     .then( response => {
+		    	 let   cid = response.id;
+		    	 const msg = ( response.ok ) 
+		    	        ? "댓글이 등록되었습니다"
+		    			: "댓글이 등록 실패"
+		         alert(msg)
+		    	 window.location.href()
+		     })
+
 				
 		
 	});

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.green.dto.ArticleDTO;
 import com.green.dto.Comments;
+import com.green.dto.CommentsDTO;
 import com.green.dto.article;
+import com.green.repository.ArticleRepository;
 import com.green.repository.CommentsRepository;
 
 @Service
@@ -16,7 +18,11 @@ public class CommentsService {
 
 	@Autowired
 	private CommentsRepository commentsRepository;
-
+	
+	
+	@Autowired
+	private ArticleRepository articleRepository;
+	
 	
 	
 	//id에 해당하는 댓글 리스트
@@ -35,6 +41,29 @@ public class CommentsService {
 //		return commentsNickname;
 //	}
 	
+	//댓글생성
+	public CommentsDTO create(Long articleId, CommentsDTO commentsDto) {
+        
+        // 1. 게시글 조회 및 예외 처리
+        article article = articleRepository.findById(articleId)
+            .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+        
+        // 2. DTO를 엔티티로 변환
+        Comments comment = commentsDto.toEntity(article); // DTO에 toEntity() 메서드 추가 필요!
+
+        // 3. 엔티티를 저장
+        Comments created = commentsRepository.save(comment);
+
+        // 4. 저장된 엔티티를 다시 DTO로 변환해 반환
+        return CommentsDTO.createCommentsDTO(created);
+    }
 	
+	//댓글삭제
+	public void delete(Long commentsId) {
+		commentsRepository.deleteById(commentsId);
+	
+	}
 	
 }
+	
+	

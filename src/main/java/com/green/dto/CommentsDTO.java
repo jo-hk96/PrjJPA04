@@ -16,8 +16,7 @@ public class CommentsDTO {
 	private String nickname;//닉네임
 	private String body;	//댓글본문
 	
-	public static CommentsDTO
-		createCommentsDTO(Comments comments) {
+	public static CommentsDTO createCommentsDTO(Comments comments) {
 		return new CommentsDTO(
 				comments.getId(),
 				comments.getArticle().getId(),
@@ -25,4 +24,11 @@ public class CommentsDTO {
 				comments.getBody()
 				);
 	}
+
+	public Comments toEntity(article article) {
+		return new Comments(id, body, nickname, article);
+	}
+
+	
+
 }
