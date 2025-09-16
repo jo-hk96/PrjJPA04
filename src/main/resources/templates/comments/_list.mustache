@@ -1,0 +1,72 @@
+<div id = "comments-list">
+
+<!-- 댓글반복 시작 -->
+	<!-- article controller에서 model로 보낸 commentsList 반복문  -->
+	{{#commentsList}}
+		<div class="card">
+		  <h5 class="card-header" >
+			  		{{nickname}}
+			  	<button class = "btn btn-sm btn-outline-primary" style = "margin-left :20px;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="댓글수정">
+			  		댓글수정
+			  	</button>
+			  	
+			  	<button type="button"  class = "btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleDelete">
+					댓글삭제
+				</button>
+		  </h5>
+			  <div class="card-body">
+				   {{body}}
+			  </div>
+		</div>
+	{{/commentsList}}
+	
+<!-- 댓글 반복 끝 -->	
+</div>
+
+<!-- 삭제 모달 -->
+<div class="modal fade" id="exampleDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+			댓글 삭제  (ㅠ _ ㅠ)?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary">삭제하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 수정 모달 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">닉네임:</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">댓글내용:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary">수정하기</button>
+      </div>
+    </div>
+  </div>
+</div>

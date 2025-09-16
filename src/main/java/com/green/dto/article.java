@@ -4,7 +4,9 @@ package com.green.dto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
 
 
@@ -13,10 +15,16 @@ import lombok.Data;
 
 @Data
 @Entity
+@SequenceGenerator(
+		name = "article_seq",
+		sequenceName = "article_seq",
+		initialValue = 1,
+		allocationSize = 1
+		)
 public class article {
 	
 	@Id             	//primary key
-	@GeneratedValue 	//시퀀스 :번호자동증가
+	@GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "article_seq")
 	private Long id; //integer : null 입력가능 , int <- null x 
 	
 	@Column              // 데이터베이스 컬럼

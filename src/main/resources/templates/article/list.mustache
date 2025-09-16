@@ -24,9 +24,10 @@
 		         <th scope="row">{{id}}</th>
 		         <td><a href ="/article/view/{{id}}" >{{title}}</a></td>
 		         <td>{{content}}</td>
-		          <th scope="col"><a href="/article/delete/{{id}}">삭제</a></th>
-		          <th scope="col"><a href="/article/updateForm/{{id}}">수정</a></th>
-		      </tr>
+		          <th><button type="submit" class="btn btn-danger"><a href="/article/delete/{{id}}" style = "text-decoration: none; color : white">삭제</a></button></th>
+		        <th><button type="submit" class="btn btn-primary">
+		        <a href="/article/updateForm/{{id}}" style = "text-decoration: none; color : white">수정</a></button>
+				</th>
 			{{/articleList}}
 		   </tbody>
 	</table>

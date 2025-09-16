@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.green.dto.ArticleDTO;
+import com.green.dto.Comments;
 import com.green.dto.article;
 import com.green.repository.ArticleRepository;
+import com.green.repository.CommentsRepository;
+import com.green.service.ArticleService;
+import com.green.service.CommentsService;
 
 @Controller
 public class articleController {
@@ -22,6 +26,9 @@ public class articleController {
 	
 	@Autowired
 	private ArticleRepository articleRepository; 
+	
+	@Autowired
+	private CommentsService commentsService;
 	
 	
 	@GetMapping("/article/list")
@@ -82,9 +89,27 @@ public class articleController {
 	
 	//해당 게시글 상세보기
 	@GetMapping("/article/view/{id}")
-	public  String  view(@PathVariable("id") Long id , Model model) {
+	public  String  view(@PathVariable("id") Long id ,String nickname, Model model) {
 		Optional<article> article = articleRepository.findById(id);
 		model.addAttribute("article",article.get());
+		//댓글 처리 추가
+		
+		
+		
+		
+		//댓글 조회 (id)
+		List<Comments> commentsList = commentsService.getComments(id);
+
+		//닉네임으로 조회
+		//List<Comments> nicknameComments = commentsService.getNickname(nickname);
+		
+		
+		
+		
+		//조회된 댓글을 model에 추가
+		
+		//model.addAttribute("nicknameComments",nicknameComments);
+		model.addAttribute("commentsList",commentsList);
 		return "article/view"; 
 	}
 	
