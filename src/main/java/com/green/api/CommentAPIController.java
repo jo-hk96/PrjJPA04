@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.green.dto.Comments;
+import com.green.dto.CommentsDTO;
 import com.green.repository.CommentsRepository;
 
 @RestController
@@ -19,7 +21,8 @@ public class CommentAPIController {
 	
 	//댓글 쓰기
 	@PostMapping("/api/articles/{articleId}/comments")
-	public ResponseEntity<Comments> create (@PathVariable("articleId") Long articleId, Comments comments){
+	public ResponseEntity<Comments> create (@PathVariable("articleId") Long articleId,
+												@RequestBody CommentsDTO comments){
 	Comments created = commentsRepository.save( comments);
 		System.out.println(comments);
 	

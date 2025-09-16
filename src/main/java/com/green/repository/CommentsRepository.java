@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.green.dto.Comments;
+import com.green.dto.CommentsDTO;
 
 
 
@@ -19,6 +20,8 @@ public interface CommentsRepository extends CrudRepository	<Comments , Long> {
 	
 	@Query(value = "select * from comments where article_id = :articleId" ,nativeQuery = true)
 	List<Comments> findByArticleId(Long articleId);
+
+	Comments save(CommentsDTO comments);
 	
 	//native query xml
 	//src/main/resource/META-INF/orm.xml // 폴더와 파일을 생성 해야함
