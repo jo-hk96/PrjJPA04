@@ -6,7 +6,10 @@
 		<div class="card" id="comment-{{id}}">
 		  <h5 class="card-header" >
 			  		{{nickname}}
-			  	<button class = "btn btn-sm btn-outline-primary" style = "margin-left :20px;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="댓글수정">
+			  	<button class = "btn btn-sm btn-outline-primary" style = "margin-left :20px;" data-bs-toggle="modal" data-bs-target="#exampleUpdate" data-bs-whatever="댓글수정" 
+					  	 data-id="{{id}}"
+					  	 data-body = "{{body}}"  
+					  	 data-nickname = "{{nickname}}">
 			  		댓글수정
 			  	</button>
 			  	
@@ -44,7 +47,7 @@
 
 
 <!-- 수정 모달 -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleUpdate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
@@ -52,20 +55,18 @@
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-	        <form>
 	          <div class="mb-3">
 	            <label for="recipient-name" class="col-form-label">닉네임:</label>
-	            <input type="text" class="form-control" id="recipient-name">
+	            <input type="text" class="form-control" id="commentNickname">
 	          </div>
 	          <div class="mb-3">
 	            <label for="message-text" class="col-form-label">댓글내용:</label>
-	            <textarea class="form-control" id="message-text"></textarea>
+	            <textarea class="form-control" id="commentBody" ></textarea>
 	          </div>
-	        </form>
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-	        <button type="button" class="btn btn-primary" id = "commentUpdate" >수정하기</button>
+	        <button type="button" class="btn btn-primary" id = "commentUpdate">수정하기</button>
 	      </div>
 	    </div>
 	  </div>
@@ -73,9 +74,31 @@
 
 
 <script>
-	const comUpdateEl = document.querySelector("#commentUpdate");
-	const comDeleteEl = document.querySelector("#commentDelete");
+	const comUpdateEl = document.querySelector('#commentUpdate');
+	const comDeleteEl = document.querySelector('#commentDelete');
+	const comNicknameEl = document.querySelector('#commentNickname');
+	const comBodyEl = document.querySelector('#commentBody');
 	const exampleDeleteModal = document.getElementById('exampleDelete');
+	const exampleUpdateModal = document.getElementById('exampleUpdate');
+	
+	
+	//commentsList반복문 때문에 All 버튼 다 가져옴
+	const updateBtns = document.querySelectorAll('.btn.btn-sm.btn-outline-primary');
+	updateBtns.forEach(btn =>{
+	
+		btn.addEventListener('click',(event) => {
+			//data-nickname 들고오기
+			const nicknameContent = event.currentTarget.dataset.nickname;
+			//data-body 들고오기
+			const bodyContent = event.currentTarget.dataset.body;
+			
+			//들고온 body ,nickname을 모달 텍스트에 넣어줌
+			comNicknameEl.value = nicknameContent;
+			comBodyEl.value = bodyContent;
+		});
+		
+	});
+	
 
 	// 모달이 열릴 때 이벤트 리스너를 추가
 	exampleDeleteModal.addEventListener('show.bs.modal', function(event) {
@@ -91,10 +114,9 @@
 	});
 
 	// 이제 '삭제하기' 버튼에만 클릭 이벤트 리스너를 추가한다.
-	const modalDeleteBtn = document.querySelector('#commentDelete');
-	modalDeleteBtn.addEventListener('click', (event) => {
+	comDeleteEl.addEventListener('click', (event) => {
 	    // 4. 클릭된 버튼에서 ID를 가져와 URL을 동적으로 생성한다.
-	    const commentId = event.target.dataset.id;
+	  	const commentId = event.target.dataset.id; 
 	    const url = `/api/articles/comments/${commentId}`;
 
 	    const params = {
@@ -126,7 +148,101 @@
 	            console.error('Fetch Error:', error);
 	        });
 	});
-	</Script>
 	
+	
+	
+	
+	//==========댓글수정=================
+		
+		
+		exampleUpdateModal.addEventListener('show.bs.modal', function(event) {
+	    // 1. 모달을 띄운 버튼(event.relatedTarget)에서 data-id 속성 값을 가져온다.
+	    const button = event.relatedTarget;
+	    const commentId = button.getAttribute('data-id');
 
+	    // 2. 모달창 내부의 '삭제하기' 버튼을 찾는다.
+	    const modalDeleteBtn = this.querySelector('#commentUpdate');
 
+	    // 3. 모달 내부 버튼에 댓글 ID를 넣어준다.
+	    modalDeleteBtn.dataset.id = commentId;
+	});
+
+		
+		
+	comUpdateEl.addEventListener('click', (event) => {
+	    // 4. 클릭된 버튼에서 ID를 가져와 URL을 동적으로 생성한다.
+	   			const updateId = event.target.dataset.id; 
+			    const url = `/api/articles/comments/${updateId}`;
+			    const comment = {
+						nickname : comNicknameEl.value, //닉네임
+						body : comBodyEl.value, //댓글본문
+				}
+			    const params = {
+			        method: 'PATCH',
+			        body: JSON.stringify(comment),
+			    	headers :{"Content-type": "application/json; charset=utf-8"}
+			    }
+			    
+			    fetch(url, params)
+			    .then(response => {
+			        if (!response.ok) {
+			            throw new Error(`댓글 수정 실패: ${response.status}`);
+			        }
+			        // 서버로부터 수정된 댓글 데이터를 JSON 형태로 받음
+			        return response.json();
+			    })
+			    .then(updatedComment => {
+			        alert('댓글 수정 성공');
+			        
+			        // 1. 수정된 댓글의 HTML 요소를 찾기
+			        const commentElement = document.getElementById(`comment-${updatedComment.id}`);
+			        
+			        // 2. 만약 요소를 찾았다면 내용을 업데이트
+			         if (commentElement) {
+			        // 댓글 닉네임과 본문 요소를 찾아서 새로운 내용으로 바꿔줌
+			        const nicknameElement = commentElement.querySelector('.card-header');
+			        const bodyElement = commentElement.querySelector('.card-body');
+			
+			        // 찾은 요소의 내용을 업데이트 (HTML 구조에 맞춰서)
+			        if (nicknameElement) {
+			            nicknameElement.innerHTML = `${updatedComment.nickname} 
+			                <button class="btn btn-sm btn-outline-primary" style="margin-left: 20px;" 
+			                        data-bs-toggle="modal" data-bs-target="#exampleUpdate" data-bs-whatever="댓글수정" 
+			                        data-id="${updatedComment.id}" data-body="${updatedComment.body}" 
+			                        data-nickname="${updatedComment.nickname}">
+			                    댓글수정
+			                </button>
+			                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" 
+			                        data-bs-target="#exampleDelete" data-id="${updatedComment.id}">
+			                    댓글삭제
+			                </button>`;
+			        }
+			        
+			        if (bodyElement) {
+			            bodyElement.textContent = updatedComment.body;
+			        }
+			    }
+
+			        // 3. 모달창을 숨김
+			        const modal = document.getElementById('exampleUpdate');
+			        const modalInstance = bootstrap.Modal.getInstance(modal);
+			        if (modalInstance) {
+			            modalInstance.hide();
+			        }
+			    })
+			    .catch(error => {
+			        alert(error.message);
+			    });
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+		        
+	});
+	
+	
+	    
+	</Script>

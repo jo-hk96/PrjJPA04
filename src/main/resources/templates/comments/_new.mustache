@@ -29,7 +29,8 @@
 				body : bodyEl.value, //댓글본문
 				article_id : {{id}}	   //원글번호
 		}
-	const params = {
+		
+		const params = {
 				method :'POST',
 				body : JSON.stringify(comment),
 				headers :{"Content-type": "application/json; charset=utf-8"}

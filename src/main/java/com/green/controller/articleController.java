@@ -99,11 +99,9 @@ public class articleController {
 		
 		//댓글 조회 (id)
 		List<Comments> commentsList = commentsService.getComments(id);
-
+		
 		//닉네임으로 조회
 		//List<Comments> nicknameComments = commentsService.getNickname(nickname);
-		
-		
 		
 		
 		//조회된 댓글을 model에 추가

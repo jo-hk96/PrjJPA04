@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.green.dto.ArticleDTO;
 import com.green.dto.Comments;
 import com.green.dto.CommentsDTO;
 import com.green.dto.article;
@@ -41,6 +41,8 @@ public class CommentsService {
 //		return commentsNickname;
 //	}
 	
+	
+	
 	//댓글생성
 	public CommentsDTO create(Long articleId, CommentsDTO commentsDto) {
         
@@ -61,7 +63,18 @@ public class CommentsService {
 	//댓글삭제
 	public void delete(Long commentsId) {
 		commentsRepository.deleteById(commentsId);
+	}
 	
+	
+	//댓글 수정
+	@Transactional
+	public CommentsDTO update(Long updateId , CommentsDTO commentsDto) {
+		Comments target = commentsRepository.findById(updateId)
+				.orElseThrow(() -> new IllegalArgumentException("해당댓글없음"));
+		target.setNickname(commentsDto.getNickname());
+		target.setBody(commentsDto.getBody());
+		return CommentsDTO.createCommentsDTO(target);
+		
 	}
 	
 }
